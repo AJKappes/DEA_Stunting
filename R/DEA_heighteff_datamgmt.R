@@ -2,7 +2,7 @@ library(Benchmarking)
 library(lpSolve)
 library(ggplot2)
 library(dplyr)
-
+library(magrittr)
 
 df <- data.frame()
 
@@ -29,16 +29,20 @@ dea <- function(df){
     if (i==1){
       
       eff <- res$objval
+      vals <- res$solution
     }
     else{
       
       eff <- rbind(eff, res$objval)
+      vals <- rbind(vals, res$solution)
     }
   }
   
   eff <- data.frame(eff[,])
+  vals <- data.frame(vals[,])
   
-  return(eff)
+  #return(eff)
+  return(vals)
 
 }
 
@@ -90,6 +94,121 @@ eff8 <- dea(data8)
 eff9 <- dea(data9)
 eff10 <- dea(data10)
 eff11 <- dea(data11)
+
+# comment out below if objective fx values are used, not input coefficient contribution
+nutr_ins <- c('protein', 'carbs', 'veg', 'corn', 'fruit', 'fat')
+
+val1 <- eff1[, 2:7] %>% set_colnames(nutr_ins)
+val2 <- eff2[, 2:7] %>% set_colnames(nutr_ins)
+val3 <- eff3[, 2:7] %>% set_colnames(nutr_ins)
+val4 <- eff4[, 2:7] %>% set_colnames(nutr_ins)
+val5 <- eff5[, 2:7] %>% set_colnames(nutr_ins)
+val6 <- eff6[, 2:7] %>% set_colnames(nutr_ins)
+val7 <- eff7[, 2:7] %>% set_colnames(nutr_ins)
+val8 <- eff8[, 2:7] %>% set_colnames(nutr_ins)
+val9 <- eff9[, 2:7] %>% set_colnames(nutr_ins)
+val10 <- eff10[, 2:7] %>% set_colnames(nutr_ins)
+val11 <- eff11[, 2:7] %>% set_colnames(nutr_ins)
+
+means_val1 <- cbind(mean(val1$protein), mean(val1$carbs), mean(val1$veg),
+                    mean(val1$corn), mean(val1$fruit), mean(val1$fat))
+
+stndv_val1 <- cbind(sd(val1$protein), sd(val1$carbs), sd(val1$veg),
+                    sd(val1$corn), sd(val1$fruit), sd(val1$fat))
+
+sum_stat_val1 <- rbind(means_val1, stndv_val1) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val2 <- cbind(mean(val2$protein), mean(val2$carbs), mean(val2$veg),
+                    mean(val2$corn), mean(val2$fruit), mean(val2$fat))
+
+stndv_val2 <- cbind(sd(val2$protein), sd(val2$carbs), sd(val2$veg),
+                    sd(val2$corn), sd(val2$fruit), sd(val2$fat))
+
+sum_stat_val2 <- rbind(means_val2, stndv_val2) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val3 <- cbind(mean(val3$protein), mean(val3$carbs), mean(val3$veg),
+                    mean(val3$corn), mean(val3$fruit), mean(val3$fat))
+
+stndv_val3 <- cbind(sd(val3$protein), sd(val3$carbs), sd(val3$veg),
+                    sd(val3$corn), sd(val3$fruit), sd(val3$fat))
+
+sum_stat_val3 <- rbind(means_val3, stndv_val3) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val4 <- cbind(mean(val4$protein), mean(val4$carbs), mean(val4$veg),
+                    mean(val4$corn), mean(val4$fruit), mean(val4$fat))
+
+stndv_val4 <- cbind(sd(val4$protein), sd(val4$carbs), sd(val4$veg),
+                    sd(val4$corn), sd(val4$fruit), sd(val4$fat))
+
+sum_stat_val4 <- rbind(means_val4, stndv_val4) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val5 <- cbind(mean(val5$protein), mean(val5$carbs), mean(val5$veg),
+                    mean(val5$corn), mean(val5$fruit), mean(val5$fat))
+
+stndv_val5 <- cbind(sd(val5$protein), sd(val5$carbs), sd(val5$veg),
+                    sd(val5$corn), sd(val5$fruit), sd(val5$fat))
+
+sum_stat_val5 <- rbind(means_val5, stndv_val5) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val6 <- cbind(mean(val6$protein), mean(val6$carbs), mean(val6$veg),
+                    mean(val6$corn), mean(val6$fruit), mean(val6$fat))
+
+stndv_val6 <- cbind(sd(val6$protein), sd(val6$carbs), sd(val6$veg),
+                    sd(val6$corn), sd(val6$fruit), sd(val6$fat))
+
+sum_stat_val6 <- rbind(means_val6, stndv_val6) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val7 <- cbind(mean(val7$protein), mean(val7$carbs), mean(val7$veg),
+                    mean(val7$corn), mean(val7$fruit), mean(val7$fat))
+
+stndv_val7 <- cbind(sd(val7$protein), sd(val7$carbs), sd(val7$veg),
+                    sd(val7$corn), sd(val7$fruit), sd(val7$fat))
+
+sum_stat_val7 <- rbind(means_val7, stndv_val7) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val8 <- cbind(mean(val8$protein), mean(val8$carbs), mean(val8$veg),
+                    mean(val8$corn), mean(val8$fruit), mean(val8$fat))
+
+stndv_val8 <- cbind(sd(val8$protein), sd(val8$carbs), sd(val8$veg),
+                    sd(val8$corn), sd(val8$fruit), sd(val8$fat))
+
+sum_stat_val8 <- rbind(means_val8, stndv_val8) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val9 <- cbind(mean(val9$protein), mean(val9$carbs), mean(val9$veg),
+                    mean(val9$corn), mean(val9$fruit), mean(val9$fat))
+
+stndv_val9 <- cbind(sd(val9$protein), sd(val9$carbs), sd(val9$veg),
+                    sd(val9$corn), sd(val9$fruit), sd(val9$fat))
+
+sum_stat_val9 <- rbind(means_val9, stndv_val9) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val10 <- cbind(mean(val10$protein), mean(val10$carbs), mean(val10$veg),
+                    mean(val10$corn), mean(val10$fruit), mean(val10$fat))
+
+stndv_val10 <- cbind(sd(val10$protein), sd(val10$carbs), sd(val10$veg),
+                    sd(val10$corn), sd(val10$fruit), sd(val10$fat))
+
+sum_stat_val10 <- rbind(means_val10, stndv_val10) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+means_val11 <- cbind(mean(val11$protein), mean(val11$carbs), mean(val11$veg),
+                    mean(val11$corn), mean(val11$fruit), mean(val11$fat))
+
+stndv_val11 <- cbind(sd(val11$protein), sd(val11$carbs), sd(val11$veg),
+                    sd(val11$corn), sd(val11$fruit), sd(val11$fat))
+
+sum_stat_val11 <- rbind(means_val11, stndv_val11) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
+
+
+desc <- data.frame(rep(c('mean', 'sd'), 11)) %>% set_colnames('statistic')
+desc_row <- data.frame(c('Jun', 'Jun', 'Jul', 'Jul', 'Aug', 'Aug', 'Sep', 'Sep', 'Oct', 'Oct',
+                         'Nov', 'Nov', 'Dec', 'Dec', 'Jan', 'Jan', 'Feb', 'Feb', 'Mar', 'Mar',
+                         'Apr', 'Apr')) %>% set_colnames('month')
+
+agg_sum_val_stat <- rbind(sum_stat_val1, sum_stat_val2, sum_stat_val3, sum_stat_val4,
+                          sum_stat_val5, sum_stat_val6, sum_stat_val7, sum_stat_val8,
+                          sum_stat_val9, sum_stat_val10, sum_stat_val11) %>% set_rownames(1:nrow(desc_row))
+
+agg_sum_val_stat <- cbind(desc_row, desc, agg_sum_val_stat)
 
 eff <- cbind(eff1, eff2, eff3, eff4, eff5, eff6, eff7, eff8, eff9, eff10, eff11)
 colnames(eff) <- c('June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')
