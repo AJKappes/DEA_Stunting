@@ -209,6 +209,36 @@ agg_sum_val_stat <- rbind(sum_stat_val1, sum_stat_val2, sum_stat_val3, sum_stat_
                           sum_stat_val9, sum_stat_val10, sum_stat_val11) %>% set_rownames(1:nrow(desc_row))
 
 agg_sum_val_stat <- cbind(desc_row, desc, agg_sum_val_stat)
+mean_val_stat <- cbind(subset(agg_sum_val_stat, agg_sum_val_stat$statistic == 'mean'), 1:11)
+colnames(mean_val_stat)[3:9] <- c('Food_Group1', 'Food_Group2', 'Food_Group3', 'Food_Group4', 'Food_Group5',
+                                  'Food_Group6','x')
+
+input_map <- ggplot(mean_val_stat, aes(x)) +
+  geom_line(aes(y = Food_Group1), alpha = 0.5) +
+  geom_point(aes(y = Food_Group1, shape = 'Food_Goup1'), size = 4) +
+  geom_line(aes(y = Food_Group2), alpha = 0.5) +
+  geom_point(aes(y = Food_Group2, shape = 'Food_Group2'), size = 4) +
+  geom_line(aes(y = Food_Group3), alpha = 0.5) +
+  geom_point(aes(y = Food_Group3, shape = 'Food_Group3'), size = 4) +
+  geom_line(aes(y = Food_Group4), alpha = 0.5) +
+  geom_point(aes(y = Food_Group4, shape = 'Food_Group4'), size = 4) +
+  geom_line(aes(y = Food_Group5), alpha = 0.5) +
+  geom_point(aes(y = Food_Group5, shape = 'Food_Group5'), size = 4) +
+  geom_line(aes(y = Food_Group6), alpha = 0.5) +
+  geom_point(aes(y = Food_Group6, shape = 'Food_Group6'), size = 4) +
+  scale_shape_manual(name = 'Food Groups', 
+                     labels = c('Chicken, fish, eggs, other meat items',
+                                'Rice, potatoes, wheat',
+                                'Greens, cabbage, tomatoes, avocados, other vegetables',
+                                'Ugali and porridge',
+                                'Mangos, oranges, bananas, guavas',
+                                'Breast milk'),
+                     values = c(0, 1, 2, 3, 4, 5)) +
+  scale_x_discrete(limits = c('June-14', 'July', 'Aug', 'Sep', 'Oct','Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')) +
+  scale_y_continuous(breaks = seq(from = 0, to = 0.25, by = .025), limits = c(0, 0.25)) +
+  labs(title = "Food Group % Impact on Growth Efficiency", x = '', y = "% Impact") +
+  theme(plot.title = element_text(size = 20, face = 'bold', hjust = .5),
+        axis.title = element_text(size = 15, face = 'bold'))
 
 eff <- cbind(eff1, eff2, eff3, eff4, eff5, eff6, eff7, eff8, eff9, eff10, eff11)
 colnames(eff) <- c('June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')
