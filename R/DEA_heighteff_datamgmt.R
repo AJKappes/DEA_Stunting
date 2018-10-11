@@ -198,6 +198,8 @@ stndv_val11 <- cbind(sd(val11$protein), sd(val11$carbs), sd(val11$veg),
 
 sum_stat_val11 <- rbind(means_val11, stndv_val11) %>% set_colnames(nutr_ins) %>% set_rownames(c('mean', 'sd'))
 
+stndvs <- rbind(stndv_val1, stndv_val2, stndv_val3, stndv_val4, stndv_val5, stndv_val6,
+                stndv_val7, stndv_val8, stndv_val9, stndv_val10, stndv_val11) %>% set_colnames(nutr_ins)
 
 desc <- data.frame(rep(c('mean', 'sd'), 11)) %>% set_colnames('statistic')
 desc_row <- data.frame(c('Jun', 'Jun', 'Jul', 'Jul', 'Aug', 'Aug', 'Sep', 'Sep', 'Oct', 'Oct',
@@ -213,86 +215,106 @@ mean_val_stat <- cbind(subset(agg_sum_val_stat, agg_sum_val_stat$statistic == 'm
 colnames(mean_val_stat)[3:9] <- c('Food_Group1', 'Food_Group2', 'Food_Group3', 'Food_Group4', 'Food_Group5',
                                   'Food_Group6','x')
 
+fgroups <- c('Food_Group1', 'Food_Group2', 'Food_Group3', 'Food_Group4', 'Food_Group5', 'Food_Group6')
+month <- c('Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr' )
+
+submean <- subset(agg_sum_val_stat, agg_sum_val_stat[, 'statistic'] == 'mean')
+colnames(submean)[3:8] <- fgroups
+subsd <- subset(agg_sum_val_stat, agg_sum_val_stat[, 'statistic'] == 'sd')
+colnames(subsd)[3:8] <- fgroups
+
+agg_sum_val_stat2 <- cbind(submean$Food_Group1, subsd$Food_Group1, 
+                           submean$Food_Group2, subsd$Food_Group2,
+                           submean$Food_Group3, subsd$Food_Group3,
+                           submean$Food_Group4, subsd$Food_Group4,
+                           submean$Food_Group5, subsd$Food_Group5,
+                           submean$Food_Group6, subsd$Food_Group6) %>% round(3)
+colnames(agg_sum_val_stat2)[1:12] <- rep(c('mean', 'sd'), 6)
+agg_intake_sum <- cbind(month, agg_sum_val_stat2)
+
+
+
 input_map <- ggplot(mean_val_stat, aes(x)) +
-  geom_line(aes(y = Food_Group1), alpha = 0.5) +
+  geom_line(aes(y = Food_Group1), alpha = 0.45, linetype = 4) +
   geom_point(aes(y = Food_Group1, shape = 'Food_Goup1'), size = 4) +
-  geom_line(aes(y = Food_Group2), alpha = 0.5) +
+  geom_line(aes(y = Food_Group2), alpha = 1, linetype = 2, size = .6) +
   geom_point(aes(y = Food_Group2, shape = 'Food_Group2'), size = 4) +
-  geom_line(aes(y = Food_Group3), alpha = 0.5) +
+  geom_line(aes(y = Food_Group3), alpha = 0.45, linetype = 3) +
   geom_point(aes(y = Food_Group3, shape = 'Food_Group3'), size = 4) +
-  geom_line(aes(y = Food_Group4), alpha = 0.5) +
+  geom_line(aes(y = Food_Group4), alpha = 1, linetype = 1, size = .6) +
   geom_point(aes(y = Food_Group4, shape = 'Food_Group4'), size = 4) +
-  geom_line(aes(y = Food_Group5), alpha = 0.5) +
+  geom_line(aes(y = Food_Group5), alpha = 0.45, linetype = 5) +
   geom_point(aes(y = Food_Group5, shape = 'Food_Group5'), size = 4) +
-  geom_line(aes(y = Food_Group6), alpha = 0.5) +
+  geom_line(aes(y = Food_Group6), alpha = 0.45, linetype = 6) +
   geom_point(aes(y = Food_Group6, shape = 'Food_Group6'), size = 4) +
+  scale_linetype_manual(values = c(1, 2, 3, 4, 5, 6)) +
   scale_shape_manual(name = 'Food Groups', 
-                     labels = c('Chicken, fish, eggs, other meat items',
-                                'Rice, potatoes, wheat',
-                                'Greens, cabbage, tomatoes, avocados, other vegetables',
-                                'Ugali and porridge',
-                                'Mangos, oranges, bananas, guavas',
-                                'Breast milk'),
-                     values = c(0, 1, 2, 3, 4, 5)) +
+                        labels = c('Chicken, fish, eggs, other meat items',
+                                   'Rice, potatoes, wheat',
+                                   'Greens, cabbage, tomatoes, avocados, other vegetables',
+                                   'Ugali and porridge',
+                                   'Mangos, oranges, bananas, guavas',
+                                   'Breast milk'),
+                        values = c(1, 2, 3, 4, 5, 6)) +
   scale_x_discrete(limits = c('June-14', 'July', 'Aug', 'Sep', 'Oct','Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')) +
   scale_y_continuous(breaks = seq(from = 0, to = 0.25, by = .025), limits = c(0, 0.25)) +
-  labs(title = "Food Group % Impact on Growth Efficiency", x = '', y = "% Impact") +
+  labs(title = "Food Group Mean % Impact on Growth Efficiency", x = '', y = "Mean % Impact") +
   theme(plot.title = element_text(size = 20, face = 'bold', hjust = .5),
-        axis.title = element_text(size = 15, face = 'bold'))
+        axis.title = element_text(size = 15, face = 'bold'), legend.position = 'bottom')
 
 eff <- cbind(eff1, eff2, eff3, eff4, eff5, eff6, eff7, eff8, eff9, eff10, eff11)
 colnames(eff) <- c('June', 'July', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')
 
 
 #### package function DEA to confirm equivalent values ####
-inputss <- data11[, 5:10]
-outputt <- data11[, 4]
-
-eff_deav1 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac1 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m1 <- mean(eff_deav1$objval - eff_deac1$objval)
-
-eff_deav2 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac2 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m2 <- mean(eff_deav2$objval - eff_deac2$objval)
-
-eff_deav3 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac3 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m3 <- mean(eff_deav3$objval - eff_deac3$objval)
-
-eff_deav4 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac4 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m4 <- mean(eff_deav4$objval - eff_deac4$objval)
-
-eff_deav5 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac5 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m5 <- mean(eff_deav5$objval - eff_deac5$objval)
-
-eff_deav6 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac6 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m6 <- mean(eff_deav6$objval - eff_deac6$objval)
-
-eff_deav7 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac7 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m7 <- mean(eff_deav7$objval - eff_deac7$objval)
-
-eff_deav8 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac8 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m8 <- mean(eff_deav8$objval - eff_deac8$objval)
-
-eff_deav9 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac9 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m9 <- mean(eff_deav9$objval - eff_deac9$objval)
-
-eff_deav10 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac10 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m10 <- mean(eff_deav10$objval - eff_deac10$objval)
-
-eff_deav11 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
-eff_deac11 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
-m11 <- mean(eff_deav11$objval - eff_deac11$objval)
-
-rbind(m1, m2, m3, m4, m5, m6, m7,m8, m9, m10, m11) %>% round(3)
+# inputss <- data11[, 5:10]
+# outputt <- data11[, 4]
+# 
+# eff_deav1 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac1 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m1 <- mean(eff_deav1$objval - eff_deac1$objval)
+# 
+# eff_deav2 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac2 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m2 <- mean(eff_deav2$objval - eff_deac2$objval)
+# 
+# eff_deav3 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac3 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m3 <- mean(eff_deav3$objval - eff_deac3$objval)
+# 
+# eff_deav4 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac4 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m4 <- mean(eff_deav4$objval - eff_deac4$objval)
+# 
+# eff_deav5 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac5 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m5 <- mean(eff_deav5$objval - eff_deac5$objval)
+# 
+# eff_deav6 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac6 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m6 <- mean(eff_deav6$objval - eff_deac6$objval)
+# 
+# eff_deav7 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac7 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m7 <- mean(eff_deav7$objval - eff_deac7$objval)
+# 
+# eff_deav8 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac8 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m8 <- mean(eff_deav8$objval - eff_deac8$objval)
+# 
+# eff_deav9 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac9 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m9 <- mean(eff_deav9$objval - eff_deac9$objval)
+# 
+# eff_deav10 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac10 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m10 <- mean(eff_deav10$objval - eff_deac10$objval)
+# 
+# eff_deav11 <- dea(inputss, outputt, RTS = 'vrs', SLACK = TRUE)
+# eff_deac11 <- dea(inputss, outputt, RTS = 'crs', SLACK = TRUE)
+# m11 <- mean(eff_deav11$objval - eff_deac11$objval)
+# 
+# rbind(m1, m2, m3, m4, m5, m6, m7,m8, m9, m10, m11) %>% round(3)
 
 ### aggregating efficiencies and food frequencies ##################################
 
