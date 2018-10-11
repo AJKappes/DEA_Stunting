@@ -349,6 +349,38 @@ reduced_freq_stats <- freq_stats[, c('month', 'protein_mean', 'protein_sd', 'car
 reduced_freq_stats <- reduced_freq_stats %>% mutate_at(vars(protein_mean:fat_sd), funs(round(., 3)))
 
 colnames(reduced_freq_stats)[2:13] <- rep(c('mean', 'sd'), 6)
+m_stat <- cbind(reduced_freq_stats[, c(1,2,4,6,8,10,12)], 1:nrow(reduced_freq_stats))
+colnames(m_stat) <- c('month', 'Food_Group1', 'Food_Group2', 'Food_Group3', 'Food_Group4', 'Food_Group5',
+                      'Food_Group6', 'x')
+
+freq_map <- ggplot(m_stat, aes(x)) +
+  geom_line(aes(y = Food_Group1), alpha = 0.45, linetype = 4) +
+  geom_point(aes(y = Food_Group1, shape = 'Food_Goup1'), size = 4) +
+  geom_line(aes(y = Food_Group2), alpha = 1, linetype = 2, size = .6) +
+  geom_point(aes(y = Food_Group2, shape = 'Food_Group2'), size = 4) +
+  geom_line(aes(y = Food_Group3), alpha = 0.45, linetype = 3) +
+  geom_point(aes(y = Food_Group3, shape = 'Food_Group3'), size = 4) +
+  geom_line(aes(y = Food_Group4), alpha = 1, linetype = 1, size = .6) +
+  geom_point(aes(y = Food_Group4, shape = 'Food_Group4'), size = 4) +
+  geom_line(aes(y = Food_Group5), alpha = 0.45, linetype = 5) +
+  geom_point(aes(y = Food_Group5, shape = 'Food_Group5'), size = 4) +
+  geom_line(aes(y = Food_Group6), alpha = 0.45, linetype = 6) +
+  geom_point(aes(y = Food_Group6, shape = 'Food_Group6'), size = 4) +
+  scale_linetype_manual(values = c(1, 2, 3, 4, 5, 6)) +
+  scale_shape_manual(name = 'Food Groups', 
+                     labels = c('Chicken, fish, eggs, other meat items',
+                                'Rice, potatoes, wheat',
+                                'Greens, cabbage, tomatoes, avocados, other vegetables',
+                                'Ugali and porridge',
+                                'Mangos, oranges, bananas, guavas',
+                                'Breast milk'),
+                     values = c(1, 2, 3, 4, 5, 6)) +
+  scale_x_discrete(limits = c('June-14', 'July', 'Aug', 'Sep', 'Oct','Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr')) +
+  scale_y_continuous(breaks = seq(from = 0, to = 12, by = 1), limits = c(0, 12)) +
+  labs(title = "Food Group Mean Intake Frequencies", x = '', y = "Mean Intake Frequency") +
+  theme(plot.title = element_text(size = 20, face = 'bold', hjust = .5),
+        axis.title = element_text(size = 15, face = 'bold'), legend.position = 'bottom')
+
 
 # village average efficiency across months
 
